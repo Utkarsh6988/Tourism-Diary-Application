@@ -1,89 +1,124 @@
 package com.utkarsh.app.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tickets")
 public class Ticket {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attraction_id", nullable = false)
+    private Attraction attraction;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-	private String canalName;
-	private LocalDate visitDate;
-	private LocalDateTime bookingDate = LocalDateTime.now();
-	private String status = "ACTIVE";
-	private String deviceInfo;
+    private String canalName;
+    private LocalDate visitDate;
+    private LocalDateTime bookingDate = LocalDateTime.now();
+    
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status = TicketStatus.ACTIVE;
+    
+    private String deviceInfo;
+    private Integer quantity;  // Added for ticket quantity support
 
-	// Getters, setters, constructors
+    // Enum for ticket status
+    public enum TicketStatus {
+        ACTIVE,
+        CANCELLED,
+        USED,
+        EXPIRED
+    }
 
-	public Long getId() {
-		return id;
-	}
+    // Constructors
+    public Ticket() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Ticket(User user, Attraction attraction, LocalDate visitDate, int quantity) {
+        this.user = user;
+        this.attraction = attraction;
+        this.visitDate = visitDate;
+        this.quantity = quantity;
+        this.canalName = attraction.getCanalName();
+    }
 
-	public User getUser() {
-		return user;
-	}
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getCanalName() {
-		return canalName;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setCanalName(String canalName) {
-		this.canalName = canalName;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public LocalDate getVisitDate() {
-		return visitDate;
-	}
+    public String getCanalName() {
+        return canalName;
+    }
 
-	public void setVisitDate(LocalDate visitDate) {
-		this.visitDate = visitDate;
-	}
+    public void setCanalName(String canalName) {
+        this.canalName = canalName;
+    }
 
-	public LocalDateTime getBookingDate() {
-		return bookingDate;
-	}
+    public LocalDate getVisitDate() {
+        return visitDate;
+    }
 
-	public void setBookingDate(LocalDateTime bookingDate) {
-		this.bookingDate = bookingDate;
-	}
+    public void setVisitDate(LocalDate visitDate) {
+        this.visitDate = visitDate;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public LocalDateTime getBookingDate() {
+        return bookingDate;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setBookingDate(LocalDateTime bookingDate) {
+        this.bookingDate = bookingDate;
+    }
 
-	public String getDeviceInfo() {
-		return deviceInfo;
-	}
+    public TicketStatus getStatus() {
+        return status;
+    }
 
-	public void setDeviceInfo(String deviceInfo) {
-		this.deviceInfo = deviceInfo;
-	}
+    public void setStatus(TicketStatus status) {
+        this.status = status;
+    }
 
+    public String getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public Attraction getAttraction() {
+        return attraction;
+    }
+
+    public void setAttraction(Attraction attraction) {
+        this.attraction = attraction;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

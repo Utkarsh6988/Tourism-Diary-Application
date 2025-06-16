@@ -27,9 +27,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
+    
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @Column(nullable = false)
+    private Role role = Role.USER;  // Default role
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
@@ -70,15 +71,16 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public Role getRole() {
-		return role;
-	}
+        return role;
+    }
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
+	
 	public List<Ticket> getTickets() {
 		return tickets;
 	}
@@ -95,23 +97,18 @@ public class User {
 		this.diaryEntries = diaryEntries;
 	}
 
-	public User(Long id, String username, String email, String password, Role role, List<Ticket> tickets,
-			List<DiaryEntry> diaryEntries) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-		this.tickets = tickets;
-		this.diaryEntries = diaryEntries;
-	}
+	 public User(Long id, String username, String email, String password, 
+             Role role, List<Ticket> tickets, List<DiaryEntry> diaryEntries) {
+      this.id = id;
+      this.username = username;
+      this.email = email;
+      this.password = password;
+      this.role = role;
+      this.tickets = tickets;
+      this.diaryEntries = diaryEntries;
+  }
    
-	
-    
-    
-}
+	  public User() {
+	    }
+	}
 
-public enum Role {
-    USER, ADMIN
-}
