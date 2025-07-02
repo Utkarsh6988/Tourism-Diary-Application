@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tourism Diary Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gold: #ffd700;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--light);
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--accent), var(--gold));
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--gold), var(--accent));
+        }
+
+        main {
+            flex: 1;
+            will-change: transform;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            will-change: transform;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar h2::before {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffd700"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>') no-repeat center;
+            background-size: contain;
+            animation: pulse 2s infinite;
+        }
+
+        .navbar a {
+            color: var(--light);
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent), #b5179e);
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(248, 37, 133, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            will-change: transform;
+        }
+           .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(248, 37, 133, 0.4);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 120px 5% 80px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(63, 55, 201, 0.2));
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(248, 37, 133, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            animation: fadeIn 1.5s ease;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--gold), #ff9e00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 5% 5%;
+            perspective: 1000px;
+            will-change: transform;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            width: 300px;
+            padding: 35px;
+            color: var(--light);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .card:hover::before {
+            transform: rotate(45deg) translate(-10px, -10px);
+        }
+
+        .card i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover i {
+            transform: scale(1.1);
+            color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card h3::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover h3::after {
+            width: 80px;
+            background: var(--accent);
+        }
+
+        .card p {
+            font-size: 1.05em;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .card a {
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--gold), #ff9e00);
+            color: var(--dark);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .card a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .card a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .card a:hover::before {
+            left: 100%;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 30px 5%;
+            font-size: 0.95em;
+            position: relative;
+            will-change: transform;
+        }
+
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        footer a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        footer a:hover::after {
+            width: 100%;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Floating elements */
+        .floating {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        .floating:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            font-size: 30px;
+            animation-delay: 0s;
+        }
+
+        .floating:nth-child(2) {
+            top: 60%;
+            left: 10%;
+            font-size: 40px;
+            animation-delay: 1s;
+        }
+
+        .floating:nth-child(3) {
+            top: 30%;
+            right: 10%;
+            font-size: 50px;
+            animation-delay: 2s;
+        }
+
+        .floating:nth-child(4) {
+            bottom: 20%;
+            right: 5%;
+            font-size: 35px;
+            animation-delay: 3s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8em;
+            }
+            
+            .card {
+                width: 280px;
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 5%;
+            }
+            
+            .hero {
+                padding: 100px 5% 60px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            
+            .hero p {
+                font-size: 1.1em;
+            }
+            
+            .dashboard {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            footer a {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating decorative elements -->
+<i class="fas fa-globe-americas floating"></i>
+<i class="fas fa-map-marked-alt floating"></i>
+<i class="fas fa-plane floating"></i>
+<i class="fas fa-umbrella-beach floating"></i>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>Tourism Diary</h2>
+    <div class="navbar-links">
+    <a th:href="@{/profile}"><i class="fas fa-user-circle"></i> Profile</a>
+    <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome, <span th:text="${username}">Guest</span>!</h1>
+        <p>Your personal gateway to exploring the world's wonders and preserving your most cherished travel memories in one beautiful place.</p>
+    </section>
+
+    <!-- Dashboard Cards -->
+    <section class="dashboard">
+        <div class="card">
+            <i class="fas fa-book-open"></i>
+            <h3>My Travel Diary</h3>
+            <p>Capture, organize, and relive your travel experiences with our beautifully designed digital journal.</p>
+            <a href="/diary">Open Diary <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-suitcase-rolling"></i>
+            <h3>Explore Packages</h3>
+            <p>Discover hand-picked travel experiences tailored to your preferences and dreams.</p>
+            <a href="/packages">Browse Packages <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-plane-departure"></i>
+            <h3>Upcoming Trips</h3>
+            <p>Manage your scheduled adventures and get ready for your next journey.</p>
+            <a th:href="@{/bookings}">My Trips <i class="fas fa-arrow-right"></i></a>
+        </div> 
+    </section>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Tourism Diary. All rights reserved.</p>
+    <p>
+        <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+        <a href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+        <a href="/privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
+        <a href="/terms"><i class="fas fa-file-contract"></i> Terms</a>
+    </p>
+    <div class="social-links">
+        <a href="https://www.facebook.com/utkarsh.arora.33483"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/Utkarsh7275882"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/its_utkarsh_arora"><i class="fab fa-instagram"></i></a>
+        <a href="https://github.com/Utkarsh5669"><i class="fab fa-github"></i></a>
+    </div>
+</footer>
+
+<script>
+    // Enhanced smooth scrolling with requestAnimationFrame
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if prefers-reduced-motion is enabled
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (!prefersReducedMotion) {
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        const startPosition = window.pageYOffset;
+                        const targetPosition = targetElement.getBoundingClientRect().top + startPosition;
+                        const distance = targetPosition - startPosition;
+                        const duration = 800;
+                        let startTime = null;
+                        
+                        function animation(currentTime) {
+                            if (startTime === null) startTime = currentTime;
+                            const timeElapsed = currentTime - startTime;
+                            const run = ease(timeElapsed, startPosition, distance, duration);
+                            window.scrollTo(0, run);
+                            if (timeElapsed < duration) requestAnimationFrame(animation);
+                        }
+                        
+                        function ease(t, b, c, d) {
+                            t /= d/2;
+                            if (t < 1) return c/2*t*t*t + b;
+                            t -= 2;
+                            return c/2*(t*t*t + 2) + b;
+                        }
+                        
+                        requestAnimationFrame(animation);
+                    }
+                });
+            });
+            
+            // Optimize scroll performance
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+            
+            window.addEventListener('scroll', function() {
+                lastScrollY = window.scrollY;
+                
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        // Any scroll-related animations or effects would go here
+                        ticking = false;
+                    });
+                    
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
+        
+        // Force hardware acceleration for better performance
+        const elementsToOptimize = document.querySelectorAll('.navbar, .hero, .card, footer');
+        elementsToOptimize.forEach(el => {
+            el.style.transform = 'translateZ(0)';
+        });
+    });
+</script>
+
+</body>
+</html>

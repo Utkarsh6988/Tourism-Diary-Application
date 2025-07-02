@@ -1,0 +1,18 @@
+<!-- navbar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <div th:fragment="navbar">
+        <nav style="background-color: rgba(0,0,0,0.6); padding: 10px 20px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="color: #fff; margin: 0;">TourismDiary</h2>
+            <div>
+                <a href="/" style="color: #fff; margin: 0 10px; text-decoration: none;">Home</a>
+                <a href="/diary" style="color: #fff; margin: 0 10px; text-decoration: none;">My Diary</a>
+                <a href="/packages" style="color: #fff; margin: 0 10px; text-decoration: none;">Tour Packages</a>
+                <a href="/logout" style="color: #fff; margin: 0 10px; text-decoration: none;">Logout</a>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>
