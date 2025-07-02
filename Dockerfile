@@ -2,7 +2,8 @@
 FROM openjdk:17-jdk-slim
 
 # Set working directory inside container
-WORKDIR /app
+WORKDIR /app/Tourism_Backend_Application
+
 
 # Copy project files
 COPY . .
