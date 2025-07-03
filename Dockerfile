@@ -1,18 +1,21 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
+# Use official OpenJDK 17 image
+FROM eclipse-temurin:17-jdk
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /app
 
+# Copy build files
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-# Copy project files
-COPY . .
+# Download dependencies
+RUN ./mvnw dependency:go-offline
 
-# Make Maven wrapper executable
-RUN chmod +x mvnw
+# Copy source code
+COPY src ./src
 
-# Build the application (skip tests to speed up build)
-RUN ./mvnw clean package -DskipTests
+# Build the application
+RUN ./mvnw package -DskipTests
 
-# Run the JAR file
-CMD ["java", "-jar", "target/Tourism.Diary-0.0.1-SNAPSHOT.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "target/your-app-name.jar"]  # Replace with your JAR name
