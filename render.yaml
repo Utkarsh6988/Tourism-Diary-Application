@@ -1,9 +1,7 @@
 services:
   - type: web
     name: tourism-diary-app
-    runtime: docker  # ← Changed from 'java' to 'docker'
-    buildCommand: ./mvnw clean package
-    startCommand: java -jar target/*.jar  # Kept as-is
+    runtime: docker  # Only this line is needed for Docker runtime
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://tramway.proxy.rlwy.net:20287/railway
@@ -13,5 +11,3 @@ services:
         value: CIyjNMMxGaLxUVJyyYuPaPlucvSAvMnia
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
-      - key: SPRING_PROFILES_ACTIVE
-        value: production
