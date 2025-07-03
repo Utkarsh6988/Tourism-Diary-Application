@@ -1,14 +1,24 @@
 services:
   - type: web
-    name: tourism-diary-app  # Your service name
+    name: tourism-diary-app
     runtime: java
     buildCommand: ./mvnw clean package
     startCommand: java -jar target/*.jar
     env: java
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: tourism-postgres  # Your PostgreSQL DB name
-          property: connectionString
+        value: jdbc:postgresql://tramway.proxy.rlwy.net:20287/railway
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASSWORD
+        value: CIyjNMMxGaLxUVJyyYuPaPlucvSAvMnia
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://tramway.proxy.rlwy.net:20287/railway
+      - key: SPRING_DATASOURCE_USERNAME
+        value: postgres
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: CIyjNMMxGaLxUVJyyYuPaPlucvSAvMnia
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
       - key: SPRING_PROFILES_ACTIVE
         value: production
